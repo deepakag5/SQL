@@ -114,32 +114,6 @@ SELECT Name, Continent FROM country WHERE Continent IN ( 'Africa', 'North Americ
 
 -- https://www.w3schools.com/sql/sql_wildcards.asp
 
--- 7. Working With JOINS
-
-# List all countries and corresponding cities
-SELECT co.Name as Country, c.Name as City
-FROM country co, city c
-WHERE co.Code  = c.CountryCode 
-ORDER BY Country, city;
-
-SELECT co.Name as Country, c.Name as City
-FROM country co
-	INNER JOIN city c on co.Code = c.CountryCode
-ORDER BY Country, City;
-
-
-SELECT co.Code,co.Name as Country, c.Name as City
-FROM country co
-	LEFT JOIN city c on co.Code = c.CountryCode
-ORDER BY Country, City;
-
-
-select * from country where Code='ATA';
-
-select * from country where Code='ATA';
-
-
-
 -- 7. Working With WHERE, GROUP BY, HAVING
 
 # select continent and countries 
@@ -168,6 +142,34 @@ WHERE
     Region LIKE '%America'
 GROUP BY Continent , Region;
 
+-- 8. Working With JOINS
+
+# List all countries and corresponding cities
+SELECT co.Name as Country, c.Name as City
+FROM country co, city c
+WHERE co.Code  = c.CountryCode 
+ORDER BY Country, city;
+
+SELECT co.Name as Country, c.Name as City
+FROM country co
+	INNER JOIN city c on co.Code = c.CountryCode
+ORDER BY Country, City;
+
+
+SELECT co.Code,co.Name as Country, c.Name as City
+FROM country co
+	LEFT JOIN city c on co.Code = c.CountryCode
+ORDER BY Country, City;
+
+
+SELECT co.Code,co.Name as Country, c.Name as City
+FROM city c 
+	RIGHT JOIN country co  on co.Code = c.CountryCode
+ORDER BY Country, City;
+
+
+select * from country where Code='ATA';
+
 
 
 # can't do this
@@ -183,7 +185,7 @@ WHERE
 GROUP BY Continent , Region
 HAVING COUNT(*) > 5;
 
--- 8. Deleting
+-- 9. Deleting
 
 # Delete a record
 DELETE FROM country WHERE Name = 'China Republic';
@@ -192,7 +194,7 @@ DELETE FROM country WHERE Name = 'China Republic';
 SELECT * FROM country;
 
 
--- 9. Drop table 
+-- 10. Drop table 
 
 # Drop the city table 
 -- DROP TABLE city;
