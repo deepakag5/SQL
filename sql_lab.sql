@@ -197,5 +197,4 @@ SELECT * FROM country;
 # Drop the city table 
 -- DROP TABLE city;
 
-select * from country;
 
