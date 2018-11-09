@@ -47,7 +47,7 @@ SELECT Name, CountryCode, Population from city;
 SELECT Name AS Country, Code AS ISO, Region, Population AS Pop FROM country;
 
 
-### Using basic operations in Select clause###
+### Using basic operations in Select clause
 SELECT Name AS Country, Code AS ISO, Region, Population / 1000 AS 'Population (1000s)' FROM country;
 
 
