@@ -65,10 +65,10 @@ SELECT Name, LifeExpectancy AS 'Life Expectancy' FROM country ORDER BY LifeExpec
 ### Country Name, ISO code, region and population ordered by ISO Code
 SELECT Name AS Country, Code AS ISO, Region, Population FROM country ORDER BY Code;
 
-## City name, country code and population ordered by city name
+### City name, country code and population ordered by city name
 SELECT Name, CountryCode, Population from city ORDER BY Name;
 
-## Country name, continent and region and order by continent, region and name
+### Country name, continent and region and order by continent, region and name
 SELECT Name, Continent, Region FROM country ORDER BY Continent DESC, Region, Name;
 
 
