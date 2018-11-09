@@ -1,3 +1,29 @@
+
+To download MySQL server Please follow below link :
+
+1. Windows
+
+https://dev.mysql.com/downloads/file/?id=480824
+
+2. MacOS
+
+https://dev.mysql.com/downloads/file/?id=480551
+
+
+If you face issues just make a connection to Amazon RDS using MySQL workbench
+
+
+Hostname: sqlworkshop.cltt6gz5c47c.us-east-1.rds.amazonaws.com
+
+Username : mysqldb
+
+Password: mysql123
+
+
+
+
+
+
 ### SQL
 SQL Queries and Information
 
