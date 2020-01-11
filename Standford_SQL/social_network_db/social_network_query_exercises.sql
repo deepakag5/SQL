@@ -195,8 +195,6 @@ ORDER BY
     h1.grade, h1.name
 
 -- query cost 20.20
-
-
 SELECT
     name, grade
 FROM
@@ -209,10 +207,32 @@ WHERE
 ORDER BY grade , name
 
 -- STEPS TO BUILD ABOVE QUERY
+
 -- (SELECT * FROM Highschooler h1, Friend f WHERE h1.ID=f.ID1) t1
 -- (SELECT * FROM Highschooler h1, Friend f WHERE h1.ID=f.ID1) t1 JOIN Highschooler h2 ON h2.id=t1.ID2
 -- (SELECT * FROM Highschooler h1, Friend f WHERE h1.ID=f.ID1) t1 JOIN Highschooler h2 ON h2.id=t1.ID2 where t1.grade!=h2.grade
 -- (SELECT t1.ID FROM (SELECT * FROM Highschooler h1, Friend f WHERE h1.ID=f.ID1) t1 JOIN Highschooler h2 ON h2.id=t1.ID2 where t1.grade!=h2.grade)
-
+-- Finally,
 -- SELECT name, grade FROM Highschooler WHERE ID NOT IN (SELECT t1.ID FROM
 -- (SELECT * FROM Highschooler h1, Friend f WHERE h1.ID=f.ID1) t1 JOIN Highschooler h2 ON h2.id=t1.ID2 where t1.grade!=h2.grade)
+
+
+
+-- Q7 For each student A who likes a student B where the two are not friends,
+-- find if they have a friend C in common (who can introduce them!). For all such trios,
+-- return the name and grade of A, B, and C
+
+SELECT
+	DISTINCT h1.name, h1.grade, h2.name, h2.grade, h3.name, h3.grade
+FROM
+    Highschooler h1,
+    Highschooler h2,
+    Highschooler h3,
+    Likes l,
+    Friend f1,
+    Friend f2
+WHERE
+    h1.ID = l.ID1 AND h2.ID = l.ID2
+        AND h2.id NOT IN (SELECT ID2 FROM Friend WHERE h1.ID = ID1)
+        AND (h1.ID = f1.ID1 AND h3.ID = f1.ID2)
+        AND (h2.ID = f2.ID1 AND h3.ID = f2.ID2);
