@@ -99,7 +99,25 @@ WHERE
 
 
 -- For every pair of students who both like each other, return the name and grade of both students.
--- Include each pair only once, with the two names in alphabetical order.
+-- Include each pair only once, with the two names in alphabetical order
+
+SELECT
+      t1.name, t1.grade, t2.name, t2.grade
+FROM
+    (SELECT * FROM Highschoolers h, Likes l WHERE h.ID=l.ID1) t1
+
+JOIN
+    (SELECT * FROM Highschoolers h, Likes l WHERE h.ID=l.ID1) t2
+ON
+    t1.ID = t2.ID2 AND t2.ID = t1.ID2
+
+WHERE
+      t1.name < t2.name   --- to remove the duplicates
+ORDER BY
+      t1.name, t2.name
+
+
+
 
 
 
