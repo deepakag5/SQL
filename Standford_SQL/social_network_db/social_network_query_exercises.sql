@@ -232,7 +232,10 @@ FROM
     Friend f1,
     Friend f2
 WHERE
-    h1.ID = l.ID1 AND h2.ID = l.ID2
-        AND h2.id NOT IN (SELECT ID2 FROM Friend WHERE h1.ID = ID1)
-        AND (h1.ID = f1.ID1 AND h3.ID = f1.ID2)
-        AND (h2.ID = f2.ID1 AND h3.ID = f2.ID2);
+    h1.ID = l.ID1 AND h2.ID = l.ID2    -- A likes B
+        AND h2.id NOT IN (SELECT ID2 FROM Friend WHERE h1.ID = ID1)  --  B not friends with A
+        AND (h1.ID = f1.ID1 AND h3.ID = f1.ID2)   -- A friends with C
+        AND (h2.ID = f2.ID1 AND h3.ID = f2.ID2);  -- B friends with C
+
+
+
