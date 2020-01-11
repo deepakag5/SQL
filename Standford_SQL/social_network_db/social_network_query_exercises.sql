@@ -98,7 +98,7 @@ WHERE
 -- while query 2 involve four table scans
 
 
--- For every pair of students who both like each other, return the name and grade of both students.
+-- Q3 For every pair of students who both like each other, return the name and grade of both students.
 -- Include each pair only once, with the two names in alphabetical order
 
 -- 1. query cost - 109.26
@@ -133,7 +133,7 @@ ORDER BY
 -- both query takes same time as query execution plan is same to scan four tables
 
 
--- Find all students who do not appear in the Likes table (as a student who likes or is liked)
+-- Q4 Find all students who do not appear in the Likes table (as a student who likes or is liked)
 -- and return their names and grades. Sort by grade, then by name within each grade.
 
 -- query cost 20.20
@@ -153,9 +153,39 @@ SELECT DISTINCT
 FROM
     Highschooler
 WHERE
-    ID NOT IN (SELECT id1 FROM Likes  -- note that we don't need to do distinct id here as union will itself perform sorting and remove duplicates from both tables
-					UNION
-			  SELECT id2 FROM Likes)
+    ID NOT IN (SELECT id1 FROM Likes  -- note that we don't need to do distinct id here as
+                UNION                 -- union will itself perform sorting and remove duplicates
+              SELECT id2 FROM Likes)  -- from both tables
+
 ORDER BY grade , name;
+
+-- both query takes same time as query execution plan is same to scan three tables
+
+-- Q5 For every situation where student A likes student B, but we have no information about
+-- whom B likes (that is, B does not appear as an ID1 in the Likes table), return A and B’s names and grades.
+
+-- query cost 88.26
+SELECT
+    h1.name, h1.grade, h2.name, h2.grade
+FROM
+    Highschooler h1
+JOIN
+    Likes l ON h1.ID = l.ID1    -- A
+
+JOIN
+    Highschooler h2 ON h2.ID = l.ID2  -- likes B
+WHERE
+    h2.ID NOT IN (SELECT ID1 FROM Likes);  -- B not as ID1 in Likes
+
+
+-- query cost 88.26
+SELECT
+    t1.name, t1.grade, t2.name, t2.grade
+FROM
+    (SELECT * FROM Highschoolers h, Likes l
+    WHERE h.ID = l.ID1
+            AND ID2 NOT IN (SELECT ID1 FROM Likes)) t1
+        JOIN
+    highschoolers t2 ON t2.ID = t1.ID2;
 
 -- both query takes same time as query execution plan is same to scan three tables
