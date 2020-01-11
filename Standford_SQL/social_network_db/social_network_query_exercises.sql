@@ -222,6 +222,7 @@ ORDER BY grade , name
 -- find if they have a friend C in common (who can introduce them!). For all such trios,
 -- return the name and grade of A, B, and C
 
+-- query cost 1444.80
 SELECT
 	DISTINCT h1.name, h1.grade, h2.name, h2.grade, h3.name, h3.grade
 FROM
@@ -238,4 +239,11 @@ WHERE
         AND (h2.ID = f2.ID1 AND h3.ID = f2.ID2);  -- B friends with C
 
 
+-- Q8 Find the difference between the number of students in the school and the
+-- number of different first names
 
+-- query cost 4.20
+SELECT
+    COUNT(*) - COUNT(DISTINCT name)
+FROM
+    Highschooler;
