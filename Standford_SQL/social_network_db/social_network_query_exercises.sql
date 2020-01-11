@@ -131,3 +131,31 @@ ORDER BY
       h1.name, h2.name
 
 -- both query takes same time as query execution plan is same to scan four tables
+
+
+-- Find all students who do not appear in the Likes table (as a student who likes or is liked)
+-- and return their names and grades. Sort by grade, then by name within each grade.
+
+-- query cost 20.20
+SELECT
+	DISTINCT name, grade
+FROM
+	Highschooler
+WHERE
+	ID NOT IN (SELECT ID1 FROM Likes) AND h.ID NOT IN (SELECT ID2 FROM Likes)
+ORDER BY
+	grade, name;
+
+
+-- query cost 20.20
+SELECT DISTINCT
+    name, grade
+FROM
+    Highschooler
+WHERE
+    ID NOT IN (SELECT id1 FROM Likes  -- note that we don't need to do distinct id here as union will itself perform sorting and remove duplicates from both tables
+					UNION
+			  SELECT id2 FROM Likes)
+ORDER BY grade , name;
+
+-- both query takes same time as query execution plan is same to scan three tables
