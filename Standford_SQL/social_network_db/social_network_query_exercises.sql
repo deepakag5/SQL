@@ -5,7 +5,7 @@
 
 -- 1. query cost - 34.46
 SELECT
-    h.ID,name, f.ID2
+    name
 FROM
     Highschooler h
         JOIN
@@ -56,4 +56,20 @@ WHERE
 -- while query 2 and 3 involve 3 table scans (two times for HighSchooler)
 -- query 3 is slowest as it has two inner sub-queries
 
+-- For every student who likes someone 2 or more grades younger than themselves, return that
+-- student's name and grade, and the name and grade of the student they like.
 
+SELECT
+      h1.name, h1.grade, h2.name, h2.grade
+FROM
+    Highschooler h1
+JOIN
+    Likes l
+ON
+    h1.ID = l.ID1
+JOIN
+    Highschooler h2
+ON
+    h2.ID = l.ID2
+WHERE
+    h1.grade - h2.grade >= 2
