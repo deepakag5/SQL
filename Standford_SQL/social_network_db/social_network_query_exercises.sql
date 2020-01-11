@@ -101,6 +101,8 @@ WHERE
 -- For every pair of students who both like each other, return the name and grade of both students.
 -- Include each pair only once, with the two names in alphabetical order
 
+-- 1. query cost - 109.26
+
 SELECT
       t1.name, t1.grade, t2.name, t2.grade
 FROM
@@ -116,8 +118,16 @@ WHERE
 ORDER BY
       t1.name, t2.name
 
+-- 2. query cost - 109.26
 
+SELECT
+    h1.name, h1.grade, h2.name, h2.grade
+FROM
+    Highschoolers h1, Likes l1, Highschoolers h2, Likes l2
+WHERE
+      (h1.ID = l1.ID1 AND h2.ID=l1.ID2) AND (h2.ID=l2.ID1 AND h1.ID=l2.ID2)
+  AND h1.name < h2.name
+ORDER BY
+      h1.name, h2.name
 
-
-
-
+-- both query takes same time as query execution plan is same to scan four tables
