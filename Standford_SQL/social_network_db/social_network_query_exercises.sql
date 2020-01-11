@@ -1,7 +1,7 @@
 -- https://lagunita.stanford.edu/courses/DB/SQL/SelfPaced/jump_to/i4x://DB/SQL/sequential/seq-exercise-sql_social_query_core
 
--- Find the names of all students who are friends with someone named Gabriel
--- this query can be written in following three ways
+-- Q1 Find the names of all students who are friends with someone named Gabriel
+-- solution to this query can be written in following three ways
 
 -- 1. query cost - 34.46
 SELECT
@@ -53,12 +53,15 @@ WHERE
 
 
 -- As we can see the query 1 is the fastest as it involves only two table scans
--- while query 2 and 3 involve 3 table scans (two times for HighSchooler)
+-- while query 2 and 3 involve three table scans (two times for HighSchooler)
 -- query 3 is slowest as it has two inner sub-queries
 
--- For every student who likes someone 2 or more grades younger than themselves, return that
+-- Q2 For every student who likes someone 2 or more grades younger than themselves, return that
 -- student's name and grade, and the name and grade of the student they like.
 
+-- solution to this query can be written in following two ways
+
+-- 1. query cost - 88.26
 SELECT
       h1.name, h1.grade, h2.name, h2.grade
 FROM
@@ -73,3 +76,30 @@ ON
     h2.ID = l.ID2
 WHERE
     h1.grade - h2.grade >= 2
+
+
+
+-- 2. query cost - 109.26
+
+
+SELECT
+      t1.name, t1.grade, t2.name, t2.grade
+FROM
+    (SELECT * FROM Highschooler h, Likes l where h.ID = l.ID1) t1
+JOIN
+    (SELECT * FROM Highschooler h, Likes l where h.ID = l.ID2) t2
+ON
+    t1.ID2 = t2.ID2
+WHERE
+    t1.grade- t2.grade >= 2
+
+
+-- As we can see the query 1 is the fastest as it involves only three table scans
+-- while query 2 involve four table scans
+
+
+-- For every pair of students who both like each other, return the name and grade of both students.
+-- Include each pair only once, with the two names in alphabetical order.
+
+
+
