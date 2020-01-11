@@ -2,9 +2,6 @@
 
 -- Find the names of all students who are friends with someone named Gabriel
 -- this query can be written in following three ways
--- As we can see the query 1 is the fastest as it involves only two table scans
--- while query 2 and 3 involve 3 table scans (two times for HighSchooler)
--- query 3 is slowest as it has two inner sub-queries
 
 -- 1. query cost - 34.46
 SELECT
@@ -53,4 +50,10 @@ WHERE
                     Highschooler
                 WHERE
                     name = 'Gabriel'));
+
+
+-- As we can see the query 1 is the fastest as it involves only two table scans
+-- while query 2 and 3 involve 3 table scans (two times for HighSchooler)
+-- query 3 is slowest as it has two inner sub-queries
+
 
