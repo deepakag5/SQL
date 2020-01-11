@@ -38,18 +38,8 @@ SELECT
 FROM
     Highschooler
 WHERE
-    id IN (SELECT
-            ID1
-        FROM
-            Friend
-        WHERE
-            id1 = id
-                AND id2 IN (SELECT
-                    id
-                FROM
-                    Highschooler
-                WHERE
-                    name = 'Gabriel'));
+    id IN (SELECT ID1 FROM Friend WHERE id1 = id
+                AND id2 IN (SELECT id FROM Highschooler WHERE name = 'Gabriel'));
 
 
 -- As we can see the query 1 is the fastest as it involves only two table scans
@@ -148,8 +138,8 @@ ORDER BY
 
 
 -- query cost 20.20
-SELECT DISTINCT
-    name, grade
+SELECT
+  DISTINCT name, grade
 FROM
     Highschooler
 WHERE
@@ -188,4 +178,41 @@ FROM
         JOIN
     highschoolers t2 ON t2.ID = t1.ID2;
 
--- both query takes same time as query execution plan is same to scan three tables
+-- both query takes same time as query execution plan is same to scan four tables
+
+
+-- Q6 Find names and grades of students who only have friends in the same grade.
+-- Return the result sorted by grade, then by name within each grade
+
+-- query cost 20.20
+SELECT
+      h1.name, h1.grade
+FROM
+    Highschooler h1
+WHERE
+    ID NOT IN (SELECT ID1 FROM Highschooler h2, Friend f  WHERE h1.ID=f.ID1 AND h2.ID=f.ID2 AND h1.grade!=h2.grade)
+ORDER BY
+    h1.grade, h1.name
+
+-- query cost 20.20
+
+
+SELECT
+    name, grade
+FROM
+    Highschooler
+WHERE
+    ID NOT IN (SELECT t1.id FROM
+    (SELECT * FROM Highschooler h1, Friend f WHERE h1.ID = f.ID1) t1
+		JOIN Highschooler h2 ON h2.ID = t1.ID2
+        WHERE t1.grade != h2.grade)
+ORDER BY grade , name
+
+-- STEPS TO BUILD ABOVE QUERY
+-- (SELECT * FROM Highschooler h1, Friend f WHERE h1.ID=f.ID1) t1
+-- (SELECT * FROM Highschooler h1, Friend f WHERE h1.ID=f.ID1) t1 JOIN Highschooler h2 ON h2.id=t1.ID2
+-- (SELECT * FROM Highschooler h1, Friend f WHERE h1.ID=f.ID1) t1 JOIN Highschooler h2 ON h2.id=t1.ID2 where t1.grade!=h2.grade
+-- (SELECT t1.ID FROM (SELECT * FROM Highschooler h1, Friend f WHERE h1.ID=f.ID1) t1 JOIN Highschooler h2 ON h2.id=t1.ID2 where t1.grade!=h2.grade)
+
+-- SELECT name, grade FROM Highschooler WHERE ID NOT IN (SELECT t1.ID FROM
+-- (SELECT * FROM Highschooler h1, Friend f WHERE h1.ID=f.ID1) t1 JOIN Highschooler h2 ON h2.id=t1.ID2 where t1.grade!=h2.grade)
