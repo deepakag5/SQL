@@ -247,3 +247,15 @@ SELECT
     COUNT(*) - COUNT(DISTINCT name)
 FROM
     Highschooler;
+
+-- Q9 Find the name and grade of all students who are liked by more than one other student
+
+-- query cost 36.00
+SELECT
+    name, grade
+FROM
+    Highschooler h
+        JOIN
+    Likes l ON h.ID = l.ID2
+GROUP BY name , grade , ID2
+HAVING COUNT(*) > 1;
