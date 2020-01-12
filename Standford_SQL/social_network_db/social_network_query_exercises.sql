@@ -113,7 +113,7 @@ ORDER BY
 SELECT
     h1.name, h1.grade, h2.name, h2.grade
 FROM
-    Highschoolers h1, Likes l1, Highschoolers h2, Likes l2
+    Highschooler h1, Likes l1, Highschooler h2, Likes l2
 WHERE
       (h1.ID = l1.ID1 AND h2.ID=l1.ID2) AND (h2.ID=l2.ID1 AND h1.ID=l2.ID2)
   AND h1.name < h2.name
@@ -130,7 +130,7 @@ ORDER BY
 SELECT
 	DISTINCT name, grade
 FROM
-	Highschooler
+	Highschooler h
 WHERE
 	ID NOT IN (SELECT ID1 FROM Likes) AND h.ID NOT IN (SELECT ID2 FROM Likes)
 ORDER BY
@@ -259,3 +259,18 @@ FROM
     Likes l ON h.ID = l.ID2
 GROUP BY name , grade , ID2
 HAVING COUNT(*) > 1;
+
+
+-- extra queries
+-- Q1 For every situation where student A likes student B, but student B
+--  likes a different student C, return the names and grades of A, B, and C.
+
+-- query cost 184.18
+SELECT
+		h1.name, h1.grade, h2.name, h2.grade, h3.name, h3.grade
+FROM
+	Highschooler h1, Highschooler h2, Highschooler h3, Likes l1, Likes l2
+WHERE
+	h1.ID=l1.ID1 AND h2.ID=l1.ID2
+    AND h2.ID=l2.ID1 AND h3.ID=l2.ID2
+    AND h3.ID <> h1.ID;
