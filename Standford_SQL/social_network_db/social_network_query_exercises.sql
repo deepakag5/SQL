@@ -277,6 +277,7 @@ WHERE
 
 -- Q2 Find those students for whom all of their friends are in different
 -- grades from themselves. Return the students' names and grades.
+
 -- query cost 4.20
 SELECT
     name, grade
@@ -284,3 +285,11 @@ FROM
     Highschooler h1
 WHERE
     grade NOT IN (SELECT grade FROM Highschooler h2, Friend f WHERE h1.ID = f.ID1 AND h2.ID = f.ID2)
+
+-- Q3 What is the average number of friends per student? (Your result should be just one number.)
+
+--query cost 20.00
+SELECT
+    AVG(cnt)
+FROM
+    (SELECT COUNT(*) AS cnt FROM Friend GROUP BY ID1) t;
