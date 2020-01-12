@@ -308,7 +308,7 @@ SELECT
 FROM
     (SELECT COUNT(*) AS cnt FROM Friend GROUP BY ID1) t;
 
--- Q 4 Find the number of students who are either friends with Cassandra
+-- Q4 Find the number of students who are either friends with Cassandra
 -- or are friends of friends of Cassandra. Do not count Cassandra, even though technically she is a friend of a friend.
 
 --query cost 74.79
@@ -319,3 +319,9 @@ FROM
 WHERE
     ID1 IN (SELECT ID2 FROM Friend WHERE ID1 IN (SELECT ID FROM Highschooler WHERE name = 'Cassandra'));
 
+-- Here's how to build sol of above query
+-- Find ID of Cassandra - SELECT ID FROM Highschooler WHERE name = 'Cassandra'
+-- Find friends of Cassandra - SELECT ID2 FROM Friend WHERE ID1 IN(SELECT ID FROM Highschooler WHERE name = 'Cassandra')
+-- Find friends, friends of friends of Cassandra SELECT ID1 FROM Friend WHERE
+-- ID1 IN (SELECT ID2 FROM Friend WHERE ID1 IN (SELECT ID FROM Highschooler WHERE name = 'Cassandra'));
+-- change ID1 to COUNT(*) in the SELECT clause to get count
