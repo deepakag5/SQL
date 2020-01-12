@@ -274,3 +274,13 @@ WHERE
 	h1.ID=l1.ID1 AND h2.ID=l1.ID2
     AND h2.ID=l2.ID1 AND h3.ID=l2.ID2
     AND h3.ID <> h1.ID;
+
+-- Q2 Find those students for whom all of their friends are in different
+-- grades from themselves. Return the students' names and grades.
+-- query cost 4.20
+SELECT
+    name, grade
+FROM
+    Highschooler h1
+WHERE
+    grade NOT IN (SELECT grade FROM Highschooler h2, Friend f WHERE h1.ID = f.ID1 AND h2.ID = f.ID2)
