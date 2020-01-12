@@ -286,6 +286,18 @@ FROM
 WHERE
     grade NOT IN (SELECT grade FROM Highschooler h2, Friend f WHERE h1.ID = f.ID1 AND h2.ID = f.ID2)
 
+-- Note - A variation of this question might be
+-- For every friend pair A and B, find those friends of A where his grade doesn't match with other friend B
+-- and it's solution
+SELECT
+	h1.name, h1.grade, h2.name, h2.grade
+FROM
+	Highschooler h1, Highschooler h2, Friend f
+WHERE
+	h1.ID=f.ID1 and h2.ID=f.ID2 AND h1.grade<>h2.grade;
+
+
+
 -- Q3 What is the average number of friends per student? (Your result should be just one number.)
 
 --query cost 20.00
@@ -293,3 +305,5 @@ SELECT
     AVG(cnt)
 FROM
     (SELECT COUNT(*) AS cnt FROM Friend GROUP BY ID1) t;
+
+
