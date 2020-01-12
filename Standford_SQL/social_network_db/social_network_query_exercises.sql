@@ -289,6 +289,8 @@ WHERE
 -- Note - A variation of this question might be
 -- For every friend pair A and B, find those friends of A where his grade doesn't match with other friend B
 -- and it's solution
+
+-- query cost 339.32
 SELECT
 	h1.name, h1.grade, h2.name, h2.grade
 FROM
@@ -306,4 +308,14 @@ SELECT
 FROM
     (SELECT COUNT(*) AS cnt FROM Friend GROUP BY ID1) t;
 
+-- Q 4 Find the number of students who are either friends with Cassandra
+-- or are friends of friends of Cassandra. Do not count Cassandra, even though technically she is a friend of a friend.
+
+--query cost 74.79
+SELECT
+    COUNT(*)
+FROM
+    Friend
+WHERE
+    ID1 IN (SELECT ID2 FROM Friend WHERE ID1 IN (SELECT ID FROM Highschooler WHERE name = 'Cassandra'));
 
