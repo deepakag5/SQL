@@ -325,3 +325,25 @@ WHERE
 -- Find friends, friends of friends of Cassandra SELECT ID1 FROM Friend WHERE
 -- ID1 IN (SELECT ID2 FROM Friend WHERE ID1 IN (SELECT ID FROM Highschooler WHERE name = 'Cassandra'));
 -- change ID1 to COUNT(*) in the SELECT clause to get count
+
+
+
+-- Q5 Find the name and grade of the student(s) with the greatest number of friends
+
+-- query cost 133.26
+SELECT name, grade
+FROM Highschooler
+INNER JOIN Friend ON Highschooler.ID = Friend.ID1
+GROUP BY ID1, name, grade
+HAVING COUNT(*) = (
+  SELECT MAX(count)
+  FROM (
+    SELECT COUNT(*) AS count
+    FROM Friend
+    GROUP BY ID1
+  ) t1 );
+
+-- Here's how to build sol of above query
+-- Find count of Friends for each ID1 in Friend - SELECT COUNT(*) AS count FROM Friend GROUP BY ID1
+-- Select Max count from this above result - SELECT MAX(count) FROM (SELECT COUNT(*) AS count FROM Friend GROUP BY ID1) t1
+-- Find get name and grade from Highschooler and Friend where count matches result of above t1
