@@ -27,7 +27,8 @@ WHERE r.mID is NULL;
 
 -- second query took more time as it need to perform join
 
---Q4 Some reviewers didn't provide a date with their rating. Find the names of all reviewers who have ratings with a NULL value for the date.
+--Q4 Some reviewers didn't provide a date with their rating. Find the names of all reviewers
+-- who have ratings with a NULL value for the date.
 
 SELECT name
 FROM Reviewer
@@ -40,3 +41,21 @@ SELECT DISTINCT name,title,stars,ratingDate
 FROM Reviewer,Movie,Rating
 WHERE Reviewer.rID=Rating.rID AND Rating.mID=Movie.mID
 ORDER BY name,title,stars
+
+
+--Q6 For all cases where the same reviewer rated the same movie twice and gave it a higher
+-- rating the second time, return the reviewer's name and the title of the movie
+
+SELECT s1.name, s1.title
+FROM (SELECT name, title, stars, ratingDate
+    FROM Reviewer rw, Movie m, Rating r
+    WHERE rw.rID = r.rID AND r.mID = m.mID
+    ORDER BY name , title , stars) s1,
+    (SELECT name, title, stars, ratingDate
+    FROM Reviewer rw, Movie m, Rating r
+    WHERE rw.rID = r.rID AND r.mID = m.mID
+    ORDER BY name , title , stars) s2
+WHERE s1.name = s2.name
+      AND s1.title = s2.title
+      AND s1.stars < s2.stars
+      AND s1.ratingDate < s2.ratingDate;
