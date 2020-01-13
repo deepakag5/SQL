@@ -59,3 +59,22 @@ WHERE s1.name = s2.name
       AND s1.title = s2.title
       AND s1.stars < s2.stars
       AND s1.ratingDate < s2.ratingDate;
+
+
+--Q7 For each movie that has at least one rating, find the highest number of stars that movie
+-- received. Return the movie title and number of stars. Sort by movie title.
+
+SELECT title, MAX(stars)
+FROM Movie m
+JOIN Rating r ON m.mID = r.mID
+GROUP BY title
+ORDER BY title;
+
+-Q8 For each movie, return the title and the 'rating spread', that is, the difference between highest
+--and lowest ratings given to that movie. Sort by rating spread from highest to lowest, then by movie title.
+
+SELECT title, MAX(stars)-MIN(stars) as rating_spread
+FROM Movie m
+JOIN Rating r ON m.mID = r.mID
+GROUP BY title
+ORDER BY rating_spread DESC,title;
