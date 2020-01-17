@@ -14,3 +14,16 @@ ON s.product_id=p.product_id;
 SELECT product_id, sum(quantity) as total_quantity
 FROM Sales
 GROUP BY product_id;
+
+-- Game Play Analysis I
+SELECT player_id, MIN(event_date) as first_login
+FROM activity
+GROUP BY player_id
+
+-- Average Selling Price
+SELECT p.product_id, ROUND(SUM(units*price)/ SUM(units),2) as average_price
+FROM prices p
+JOIN unitssold u
+ON p.product_id=u.product_id
+WHERE u.purchase_date BETWEEN p.start_date AND p.end_date
+GROUP BY p.product_id;
