@@ -87,3 +87,21 @@ WHERE v.author_id=v.viewer_id
 GROUP BY author_id
 ORDER BY author_id;
 
+-- Swap Salary
+UPDATE salary SET sex = IF(sex='m','f','m')
+
+-- Actors and Directors Who Cooperated At Least Three Times
+SELECT actor_id, director_id
+FROM actordirector
+GROUP BY actor_id, director_id
+HAVING COUNT(*)>=3;
+
+-- Number of Comments per Post
+SELECT s1.sub_id as post_id, COUNT(DISTINCT s2.sub_id) as number_of_comments
+FROM submissions s1
+LEFT JOIN
+     submissions s2
+ON s1.sub_id=s2.parent_id
+WHERE s1.parent_id is null
+GROUP BY s1.sub_id
+ORDER BY s1.sub_id;
