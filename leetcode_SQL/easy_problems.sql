@@ -144,6 +144,9 @@ LIMIT 1);
 
 -- Students and Examinations
 
+--notice that we have put ON statement after all joins perfectly valid and
+-- also required as A has relation with C and B has relation with C
+-- Also, yes we can specify columns by numbers in both group by and order by
 SELECT a.student_id, a.student_name, b.subject_name, COUNT(c.subject_name) as attended_exams
 FROM Students a
 JOIN Subjects b
@@ -151,3 +154,41 @@ LEFT JOIN Examinations c
 ON a.student_id=c.student_id AND b.subject_name=c.subject_name
 GROUP BY 1,2,3
 ORDER BY 1,3;
+
+
+-- Customer Placing the Largest Number of Orders
+
+SELECT customer_number
+FROM orders
+GROUP BY customer_number
+HAVING COUNT(*) = (SELECT COUNT(*) as max_orders
+FROM orders
+GROUP BY customer_number
+ORDER BY COUNT(*) DESC
+LIMIT 1)
+
+-- Find Customer Referee
+
+SELECT name
+FROM customer
+WHERE referee_id is null or referee_id!=2;
+
+-- Queries Quality and Percentage
+
+-- using case when
+SELECT query_name, ROUND(AVG(rating/position),2) as quality,
+                   ROUND(AVG(CASE WHEN rating<3 THEN 1 ELSE 0 END)*100,2) as poor_query_percentage
+FROM queries
+GROUP BY query_name
+
+-- using subquery and self join
+SELECT a.query_name, ROUND(AVG(rating/position),2) as quality,
+                     ROUND(num_poor_ratings/COUNT(a.query_name)*100,2) as poor_query_percentage
+FROM queries as a
+LEFT JOIN
+(SELECT query_name, COUNT(query_name) as num_poor_ratings
+FROM queries
+WHERE rating < 3
+GROUP BY query_name) as b
+ON a.query_name=b.query_name
+GROUP BY a.query_name
