@@ -183,7 +183,7 @@ GROUP BY query_name
 
 -- using subquery and self join
 SELECT a.query_name, ROUND(AVG(rating/position),2) as quality,
-                     ROUND(num_poor_ratings/COUNT(a.query_name)*100,2) as poor_query_percentage
+                     IFNULL(ROUND(num_poor_ratings/COUNT(a.query_name)*100,2),0) as poor_query_percentage
 FROM queries as a
 LEFT JOIN
 (SELECT query_name, COUNT(query_name) as num_poor_ratings
@@ -192,3 +192,44 @@ WHERE rating < 3
 GROUP BY query_name) as b
 ON a.query_name=b.query_name
 GROUP BY a.query_name
+
+-- Weather Type in Each Country
+
+-- using CASE
+SELECT country_name, CASE WHEN AVG(weather_state)<=15 THEN "Cold"
+                          WHEN AVG(weather_state)>=25 THEN "Hot"
+                          ELSE "Warm"
+                     END as weather_type
+FROM countries as c
+JOIN weather as w
+ON c.country_id=w.country_id
+WHERE w.day BETWEEN "2019-11-01" AND "2019-11-30"
+GROUP BY country_name;
+
+-- using IF
+SELECT country_name, IF(AVG(weather_state)<=15,"Cold", IF(AVG(weather_state)>=25, "Hot", "Warm")) as weather_type
+FROM countries as c
+JOIN weather as w
+ON c.country_id=w.country_id
+WHERE w.day BETWEEN "2019-11-01" AND "2019-11-30"
+GROUP BY country_name;
+
+-- Not Boring Movies
+
+SELECT id, movie, description, rating
+FROM cinema
+WHERE id%2!=0 AND description!='boring'
+ORDER BY rating DESC;
+
+-- Employee Bonus
+
+SELECT name, bonus
+FROM employee e
+LEFT JOIN bonus b
+ON e.empid=b.empid
+WHERE bonus is null or bonus<1000;
+
+-- Triangle Judgement
+
+SELECT x,y,z, CASE WHEN x+y<=z OR x+z<=y OR y+z<=x THEN 'No' ELSE 'Yes' END as triangle
+FROM triangle;
