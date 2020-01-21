@@ -233,3 +233,11 @@ WHERE bonus is null or bonus<1000;
 
 SELECT x,y,z, CASE WHEN x+y<=z OR x+z<=y OR y+z<=x THEN 'No' ELSE 'Yes' END as triangle
 FROM triangle;
+
+-- Project Employees I
+
+SELECT project_id, ROUND(AVG(experience_years),2) as average_years
+FROM Project p
+JOIN EMployee e
+ON p.employee_id=e.employee_id
+GROUP BY project_id;
