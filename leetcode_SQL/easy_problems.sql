@@ -241,3 +241,27 @@ FROM Project p
 JOIN EMployee e
 ON p.employee_id=e.employee_id
 GROUP BY project_id;
+
+-- Sales Person
+
+-- using subquery
+
+SELECT name
+FROM salesperson
+WHERE sales_id NOT IN
+(SELECT sales_id
+ FROM orders as a
+ LEFT JOIN company as b
+ ON a.com_id=b.com_id
+ WHERE b.name='RED');
+
+-- using only joins - both INNER AND RIGHT join (no subquery)
+
+SELECT a.name
+FROM orders a
+JOIN company b
+ON a.com_id=b.com_id
+AND c.name='RED'
+RIGHT JOIN salesperson as c
+ON a.sales_id=c.sales_id
+WHERE o.sales_id is NULL;
