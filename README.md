@@ -26,7 +26,7 @@ SQL Queries, Optimization, Lab
 * **Functions in Predicate** : Avoid using functions in predicates.The index is not used by the database if there is a function on the column
     
         If we necessarily need to use functions then we can use 'Function based indexes' 
-        which allows us to index on the functional columns so that oracle engine will take 
+        which allows us to index on the functional columns so that database engine will take 
         the index and improves the performance of the query. 
 
 * **Wildcard at beginning of Predicate** : Avoid using wildcard (%) at the beginning of a predicate.The predicate LIKE '%abc' causes full table scan. For example:SELECT * FROM TABLE1 WHERE COL1 LIKE '%ABC'
@@ -36,7 +36,8 @@ SQL Queries, Optimization, Lab
 
    *Suboptimal SQL statement:* 
   
-   ```SELECT name FROM employee WHERE salary = (SELECT MAX(salary) FROM employee_details) AND age = (SELECT MAX(age) FROM employee_details) AND emp_dept = 'Electronics';```
+         SELECT name FROM employee WHERE salary = (SELECT MAX(salary) FROM employee_details) 
+         AND age = (SELECT MAX(age) FROM employee_details) AND emp_dept = 'Electronics';
   
    *Optimized SQL statement:*
   
