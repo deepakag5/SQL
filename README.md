@@ -15,11 +15,11 @@ SQL Queries, Optimization, Lab
   
   Predicates of the left table can stay in the WHERE clause. 
   
-   Suboptimal SQL statement: 
+   *Suboptimal SQL statement:* 
   
    ```SELECT TAB_A.COL1, TAB_B.COL1 FROM TAB_A LEFT OUTER JOIN TAB_B ON TAB_A.COL3 = TAB_B.COL3 WHERE TAB_A.COL1=123 AND TAB_B.COL2=456;``` 
   
-   Optimized SQL statement:
+   *Optimized SQL statement:*
   
    ```SELECT TAB_A.COL1, TAB_B.COL1 FROM TAB_A LEFT OUTER JOIN TAB_B ON TAB_A.COL3 = TAB_B.COL3 AND TAB_B.COL2=456 WHERE TAB_A.COL1=123;```
 
@@ -30,11 +30,11 @@ SQL Queries, Optimization, Lab
 
 * **Subqueries** - Sometimes you may have more than one subqueries in your main query. Try to minimize the number of subquery block in your query
 
-   Suboptimal SQL statement: 
+   *Suboptimal SQL statement:* 
   
    ```SELECT name FROM employee WHERE salary = (SELECT MAX(salary) FROM employee_details) AND age = (SELECT MAX(age) FROM employee_details) AND emp_dept = 'Electronics';```
   
-   Optimized SQL statement:
+   *Optimized SQL statement:*
   
    ```SELECT name FROM employee WHERE (salary, age ) = (SELECT MAX (salary), MAX (age)FROM employee_details) AND dept = 'Electronics';``` 
   
@@ -45,22 +45,22 @@ SQL Queries, Optimization, Lab
     * IN is efficient when most of the filter criteria is in the sub-query.
     * EXISTS is efficient when most of the filter criteria is in the main query. 
     
-    Suboptimal SQL statement:
+    *Suboptimal SQL statement:*
      
     ```Select * from product p where product_id IN (select product_id from order_items)```
     
-    Optimized SQL statement:
+    *Optimized SQL statement:*
     
     ```Select * from product p where EXISTS (select * from order_items o where o.product_id = p.product_id)``` 
     
 * **EXISTS vs DISTINCT** : Use EXISTS instead of DISTINCT when using joins which involves tables having one-to-many relationship.
 
-   Suboptimal SQL statement:
+   *Suboptimal SQL statement:*
     
     ```SELECT DISTINCT d.dept_id, d.dept FROM dept d,employee e WHERE e.dept = e.dept;```
 
 
-   Optimized SQL statement:
+   *Optimized SQL statement:*
 
     ```SELECT d.dept_id, d.dept FROM dept d WHERE EXISTS ( SELECT 'X' FROM employee e WHERE e.dept = d.dept);```
     
@@ -73,11 +73,11 @@ SQL Queries, Optimization, Lab
     * LIKE (allows indexing) should be used instead of functions like SUBSTR (doesn't allow indexing)
     * Use non-column expression on one side of the query because it will be processed earlier.
   
-  Suboptimal SQL statement:
+  *Suboptimal SQL statement:*
   
   ```SELECT id, name, salary FROM employee WHERE salary + 10000 < 35000;```
     
-  Optimized SQL statement: 
+  *Optimized SQL statement:* 
     
    ```SELECT id, name, salary FROM employee WHERE salary < 25000;```
 
@@ -115,11 +115,11 @@ SQL Queries, Optimization, Lab
   
   * SUBQUERY should be used - Use a subquery when you need no columns from the tables referenced in the subquery. Use a join when you do need some of the columns.  
   
-    Suboptimal SQL statement:
+    *Suboptimal SQL statement:*
   
     ```select emp.* from emp, dept where emp.deptno = dept.deptno;```
   
-    Optimized SQL statement: 
+    *Optimized SQL statement:* 
 
     ```select * from emp where deptno in ( select deptno from dept );```
     
