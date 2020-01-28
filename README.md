@@ -81,14 +81,39 @@ SQL Queries, Optimization, Lab
     
    ```SELECT id, name, salary FROM employee WHERE salary < 25000;```
 
-* **Indexing** :
+* **INDEXING** :
+          
+  * Advantages of Indexes :
+   
+       Indexes are memory objects which are used to improve the performance of queries which allows faster retrieval of records.
 
-  * Over-Indexing a Table - 
+       Following are advantages of Indexes:
+
+    1. It allows faster retrieval of data
+
+    2. It avoids the Full table scan so that the performance of retrieving data from the table is faster.
+
+    3. It avoids the table access alltogether
+
+    4. Indexes always speeds up the select statement.
+
+    5. Indexes used to improve the Execution plan of the database
+    
+  * Disadvantages of Indexes :
+    
+    1. Indexes slows down the performance of insert and update statements. So always we need follow best practice of disabling indexes before insert and update the table
+
+    2. Indexes takes additional disk space so by considering memory point indexes are costly.
+    
+   
+   * Over-Indexing a Table -
+    
             When a table has too many indexes, write operations become slower as every UPDATE, DELETE, and INSERT that touches an indexed column must update the indexes on it. 
             In addition, those indexes take up space on storage as well as in database backups. 
             “Too Many” is vague, but emphasizes that ultimately application performance is the key to determining whether things are optimal or not. 
   
   * Under-Indexing a Table - 
+  
             An under-indexed table does not serve read queries effectively. Ideally, the most common queries executed against a 
             table should benefit from indexes. Less frequent queries are evaluated on a case-by-case need and indexed when beneficial. 
             When troubleshooting a performance problem against tables that have few or no non-clustered indexes, then the issue is likely 
