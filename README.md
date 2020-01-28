@@ -183,15 +183,15 @@ SQL Queries, Optimization, Lab
   
     *Suboptimal SQL statement:*
   
-       SELECT emp.* 
-       FROM emp, dept 
-       WHERE emp.deptno = dept.deptno;
+         SELECT emp.* 
+         FROM emp, dept 
+         WHERE emp.deptno = dept.deptno;
   
     *Optimized SQL statement:* 
 
-      SELECT * FROM emp 
-      WHERE deptno 
-      IN (SELECT deptno FROM dept );
+        SELECT * FROM emp 
+        WHERE deptno 
+        IN (SELECT deptno FROM dept );
     
  * **Correlated vs Non-correlated Subqueries**
     
