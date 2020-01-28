@@ -144,15 +144,10 @@ SQL Queries, Optimization, Lab
     
    *Correlated :*
     
-    ```SELECT e.id, e.name 
-       FROM Employee eWHERE salary > 
-       (SELECT AVG(salary)FROM Employee p WHERE p.department = e.department)```
+    ```SELECT e.id, e.name FROM Employee eWHERE salary > (SELECT AVG(salary)FROM Employee p WHERE p.department = e.department)```
     
    Now, you can convert this correlated subquery to a JOIN based query for better performance as shown below: 
   
    *Non-correlated :* 
     
-    ```SELECT e.id, e.name 
-       FROM Employee 
-       INNER JOIN (SELECT department, AVG(salary) AS department_average FROM Employee GROUP BY department) AS t 
-       ON e.department = t.departmentWHERE e.salary > t.department_average;```
+    ```SELECT e.id, e.name FROM Employee INNER JOIN (SELECT department, AVG(salary) AS department_average FROM Employee GROUP BY department) AS t ON e.department = t.departmentWHERE e.salary > t.department_average;```
