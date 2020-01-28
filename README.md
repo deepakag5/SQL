@@ -128,11 +128,11 @@ SQL Queries, Optimization, Lab
     * A non-correlated subquery is executed only once and its result can be swapped back for a query, on the other hand, 
     * A correlated subquery executed multiple times, precisely once for each row returned by the outer query. 
     
-    Non-correlated :
+    *Non-correlated :*
     
      ```SELECT MAX(Salary) FROM Employee WHERE Salary NOT IN ( SELECT MAX(Salary) FROM Employee)``` 
     
-    Correlated : 
+    *Correlated :* 
     
      ```SELECT e.Name, e.Salary FROM Employee eWHERE 2 = (SELECT COUNT(Salary) FROM Employee p WHERE p.salary >= e.salary)```  
     
@@ -140,7 +140,7 @@ SQL Queries, Optimization, Lab
     
     For example, to find all employees whose salary is greater than the average salary of the department you can write following correlated subquery: 
     
-    Correlated :
+    *Correlated :*
     
     ```SELECT e.id, e.nameFROM Employee eWHERE salary > (SELECT AVG(salary)FROM Employee p WHERE p.department = e.department)```
     
