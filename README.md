@@ -36,8 +36,10 @@ SQL Queries, Optimization, Lab
 
    *Suboptimal SQL statement:* 
   
-         SELECT name FROM employee WHERE salary = (SELECT MAX(salary) FROM employee_details) 
-         AND age = (SELECT MAX(age) FROM employee_details) AND emp_dept = 'Electronics';
+         SELECT name 
+         FROM employee WHERE salary = (SELECT MAX(salary) FROM employee_details) 
+         AND age = (SELECT MAX(age) FROM employee_details) 
+         AND emp_dept = 'Electronics';
   
    *Optimized SQL statement:*
   
