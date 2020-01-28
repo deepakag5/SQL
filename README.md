@@ -111,16 +111,17 @@ SQL Queries, Optimization, Lab
             When a table has too many indexes, write operations become slower as every UPDATE, DELETE, and 
             INSERT that touches an indexed column must update the indexes on it. 
             In addition, those indexes take up space on storage as well as in database backups. 
-            “Too Many” is vague, but emphasizes that ultimately application performance is the key to determining 
-            whether things are optimal or not. 
+            “Too Many” is vague, but emphasizes that ultimately application performance is the key to 
+            determining whether things are optimal or not. 
   
   * Under-Indexing a Table - 
   
-            An under-indexed table does not serve read queries effectively. Ideally, the most common queries 
-            executed against a table should benefit from indexes. Less frequent queries are evaluated on a case-by-case need 
-            and indexed when beneficial. 
-            When troubleshooting a performance problem against tables that have few or no non-clustered indexes, then the issue is likely 
-            an under-indexing one. In these cases, feel empowered to add indexes to improve performance as needed!
+            An under-indexed table does not serve read queries effectively. Ideally, the most common 
+            queries executed against a table should benefit from indexes. 
+            Less frequent queries are evaluated on a case-by-case need and indexed when beneficial. 
+            When troubleshooting a performance problem against tables that have few or no non-clustered indexes, 
+            then the issue is likely an under-indexing one. In these cases, feel empowered to add indexes to improve 
+            performance as needed!
 
 * **Too many tables in join** :
            What are some useful ways to optimize a query that is suffering due to too many tables? 
