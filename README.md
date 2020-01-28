@@ -17,11 +17,20 @@ SQL Queries, Optimization, Lab
   
    *Suboptimal SQL statement:* 
   
-   ```SELECT TAB_A.COL1, TAB_B.COL1 FROM TAB_A LEFT OUTER JOIN TAB_B ON TAB_A.COL3 = TAB_B.COL3 WHERE TAB_A.COL1=123 AND TAB_B.COL2=456;``` 
+     SELECT TAB_A.COL1, TAB_B.COL1 
+     FROM TAB_A 
+     LEFT OUTER JOIN TAB_B 
+     ON TAB_A.COL3 = TAB_B.COL3 
+     WHERE TAB_A.COL1=123 AND TAB_B.COL2=456; 
   
    *Optimized SQL statement:*
   
-   ```SELECT TAB_A.COL1, TAB_B.COL1 FROM TAB_A LEFT OUTER JOIN TAB_B ON TAB_A.COL3 = TAB_B.COL3 AND TAB_B.COL2=456 WHERE TAB_A.COL1=123;```
+      SELECT TAB_A.COL1, TAB_B.COL1 
+      FROM TAB_A 
+      LEFT OUTER JOIN TAB_B 
+      ON TAB_A.COL3 = TAB_B.COL3 
+      AND TAB_B.COL2=456 
+      WHERE TAB_A.COL1=123;
 
 * **Functions in Predicate** : Avoid using functions in predicates.The index is not used by the database if there is a function on the column
     
@@ -37,13 +46,19 @@ SQL Queries, Optimization, Lab
    *Suboptimal SQL statement:* 
   
          SELECT name 
-         FROM employee WHERE salary = (SELECT MAX(salary) FROM employee_details) 
+         FROM employee 
+         WHERE salary = (SELECT MAX(salary) FROM employee_details) 
          AND age = (SELECT MAX(age) FROM employee_details) 
          AND emp_dept = 'Electronics';
   
    *Optimized SQL statement:*
   
-   ```SELECT name FROM employee WHERE (salary, age ) = (SELECT MAX (salary), MAX (age)FROM employee_details) AND dept = 'Electronics';``` 
+         SELECT name 
+         FROM employee 
+         WHERE (salary, age ) = 
+                     (SELECT MAX (salary), MAX (age) 
+                      FROM employee_details) 
+                      AND dept = 'Electronics'); 
   
 
 * **EXISTS vs IN** : Use operator EXISTS, IN and table joins appropriately in your query.
@@ -54,22 +69,33 @@ SQL Queries, Optimization, Lab
     
     *Suboptimal SQL statement:*
      
-    ```Select * from product p where product_id IN (select product_id from order_items)```
+        SELECT * f
+        FROM product p 
+        WHERE product_id IN (SELECT product_id FROM order_items)
     
     *Optimized SQL statement:*
     
-    ```Select * from product p where EXISTS (select * from order_items o where o.product_id = p.product_id)``` 
+        SELECT * 
+        FROM product p 
+        WHERE EXISTS (SELECT * 
+                      FROM order_items o 
+                      WHERE o.product_id = p.product_id)
     
 * **EXISTS vs DISTINCT** : Use EXISTS instead of DISTINCT when using joins which involves tables having one-to-many relationship.
 
    *Suboptimal SQL statement:*
     
-    ```SELECT DISTINCT d.dept_id, d.dept FROM dept d,employee e WHERE e.dept = e.dept;```
+       SELECT DISTINCT d.dept_id, d.dept 
+       FROM dept d,employee e 
+       WHERE e.dept = e.dept;
 
 
    *Optimized SQL statement:*
 
-    ```SELECT d.dept_id, d.dept FROM dept d WHERE EXISTS ( SELECT 'X' FROM employee e WHERE e.dept = d.dept);```
+        SELECT d.dept_id, d.dept 
+        FROM dept d 
+        WHERE EXISTS (SELECT 'X' 
+                     FROM employee e WHERE e.dept = d.dept);
     
 * **UNION ALL vs UNION** : Try to use UNION ALL in place of UNION wherever possible (as UNION performs sorting as well)
   
@@ -82,11 +108,14 @@ SQL Queries, Optimization, Lab
   
   *Suboptimal SQL statement:*
   
-  ```SELECT id, name, salary FROM employee WHERE salary + 10000 < 35000;```
+     SELECT id, name, salary 
+     FROM employee WHERE salary + 10000 < 35000;
     
   *Optimized SQL statement:* 
     
-   ```SELECT id, name, salary FROM employee WHERE salary < 25000;```
+      SELECT id, name, salary 
+      FROM employee 
+      WHERE salary < 25000;
 
 * **INDEXING** :
           
@@ -105,6 +134,7 @@ SQL Queries, Optimization, Lab
     4. Indexes always speeds up the select statement.
 
     5. Indexes used to improve the Execution plan of the database
+    
     
   * Disadvantages of Indexes :
     
@@ -153,26 +183,37 @@ SQL Queries, Optimization, Lab
   
     *Suboptimal SQL statement:*
   
-    ```select emp.* from emp, dept where emp.deptno = dept.deptno;```
+       SELECT emp.* 
+       FROM emp, dept 
+       WHERE emp.deptno = dept.deptno;
   
     *Optimized SQL statement:* 
 
-    ```select * from emp where deptno in ( select deptno from dept );```
+      SELECT * FROM emp 
+      WHERE deptno 
+      IN (SELECT deptno FROM dept );
     
  * **Correlated vs Non-correlated Subqueries**
     
     * A non-correlated subquery is executed only once and its result can be swapped back for a query, on the other hand, 
     * A correlated subquery executed multiple times, precisely once for each row returned by the outer query. 
     
-    *Correlated :* 
+   *Correlated :* 
     
-     ```SELECT e.Name, e.Salary FROM Employee eWHERE 2 = (SELECT COUNT(Salary) FROM Employee p WHERE p.salary >= e.salary)```  
+        SELECT e.Name, e.Salary 
+        FROM Employee e 
+        WHERE 2 = (SELECT COUNT(Salary) 
+                   FROM Employee p 
+                   WHERE p.salary >= e.salary);
      
     
    *Non-correlated :*
     
-     ```SELECT MAX(Salary) FROM Employee WHERE Salary NOT IN ( SELECT MAX(Salary) FROM Employee)``` 
-    
+         SELECT MAX(Salary) FROM Employee 
+         WHERE Salary 
+         NOT IN (SELECT MAX(Salary) 
+                 FROM Employee);
+        
     
    * In many cases, you can replace correlated subquery with inner join which would result in better performance. 
     
@@ -180,14 +221,22 @@ SQL Queries, Optimization, Lab
     
    *Correlated :*
     
-    ```SELECT e.id, e.name FROM Employee eWHERE salary > (SELECT AVG(salary)FROM Employee p WHERE p.department = e.department)```
-    
+            SELECT e.id, e.name 
+            FROM Employee e 
+            WHERE salary > (SELECT AVG(salary) 
+                            FROM Employee p 
+                            WHERE p.department = e.department);
+        
    Now, you can convert this correlated subquery to a JOIN based query for better performance as shown below: 
   
    *Non-correlated :* 
     
-    ```SELECT e.id, e.name FROM Employee INNER JOIN (SELECT department, AVG(salary) AS department_average FROM Employee GROUP BY department) AS t ON e.department = t.departmentWHERE e.salary > t.department_average;```
-    
+           SELECT e.id, e.name 
+           FROM Employee 
+           INNER JOIN (SELECT department, AVG(salary) AS department_average 
+           FROM Employee GROUP BY department) AS t ON e.department = t.department 
+           WHERE e.salary > t.department_average;
+        
     
     
   **HIVE** 
