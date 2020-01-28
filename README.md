@@ -151,3 +151,31 @@ SQL Queries, Optimization, Lab
    *Non-correlated :* 
     
     ```SELECT e.id, e.name FROM Employee INNER JOIN (SELECT department, AVG(salary) AS department_average FROM Employee GROUP BY department) AS t ON e.department = t.departmentWHERE e.salary > t.department_average;```
+    
+    
+    
+  **HIVE** 
+  
+  * Map Side (Auto Map Join, or Map Side Join, or Broadcast Join.) vs Reduce Side Joins (Common Join or Sort Merge Join) 
+  
+       * We use Hive Map Side Join since one of the tables in the join is a small table and can be loaded into memory. 
+        So that a join could be performed within a mapper without using a Map/Reduce step 
+       
+       * Map side join is a process where joins between between two tables are performed in the map phase without the involvement of reduce phase. 
+        
+       * Map side join allows a table to get loaded into memory ensuring a very fast join operation, performed entirely within a mapper and that too without having to use both map and reduce phases. 
+        
+       * Reduce side join also called as Repartitioned join or Repartitioned sort merge join and also it is mostly used join type. It will have to go through sort and shuffle phase 
+         which would incur network overhead.
+       * Reduce side join uses few terms like data source, tag and group key lets be familiar with it.
+         
+       * set hive.auto.convert.join=True (However, this option set true, by default. Moreover, when a table with a size less than 25 MB 
+        (hive.mapjoin.smalltable.filesize) is found, When it is enabled, during joins, the joins are converted to map-based joins)
+       
+       * Below are some limitations of Map Side join in Hive: 
+         
+         First, the major restriction is, we can never convert Full outer joins to map-side joins.However, 
+         it is possible to convert a left-outer join to a map-side join in the Hive. 
+         However, only possible since the right table that is to the right side of the join conditions, is lesser than 25 MB in size. 
+         Also, we can convert a right-outer join to a map-side join in the Hive. 
+         Similarly, only possible if the left table size is lesser than 25 MB 
