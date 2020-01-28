@@ -128,24 +128,26 @@ SQL Queries, Optimization, Lab
     * A non-correlated subquery is executed only once and its result can be swapped back for a query, on the other hand, 
     * A correlated subquery executed multiple times, precisely once for each row returned by the outer query. 
     
-    *Non-correlated :*
-    
-     ```SELECT MAX(Salary) FROM Employee WHERE Salary NOT IN ( SELECT MAX(Salary) FROM Employee)``` 
-    
     *Correlated :* 
     
      ```SELECT e.Name, e.Salary FROM Employee eWHERE 2 = (SELECT COUNT(Salary) FROM Employee p WHERE p.salary >= e.salary)```  
+     
     
-    * In many cases, you can replace correlated subquery with inner join which would result in better performance. 
+   *Non-correlated :*
     
-    For example, to find all employees whose salary is greater than the average salary of the department you can write following correlated subquery: 
+     ```SELECT MAX(Salary) FROM Employee WHERE Salary NOT IN ( SELECT MAX(Salary) FROM Employee)``` 
     
-    *Correlated :*
+    
+   * In many cases, you can replace correlated subquery with inner join which would result in better performance. 
+    
+   For example, to find all employees whose salary is greater than the average salary of the department you can write following correlated subquery: 
+    
+   *Correlated :*
     
     ```SELECT e.id, e.nameFROM Employee eWHERE salary > (SELECT AVG(salary)FROM Employee p WHERE p.department = e.department)```
     
-    Now, you can convert this correlated subquery to a JOIN based query for better performance as shown below: 
-    
-    Non-correlated : 
+   Now, you can convert this correlated subquery to a JOIN based query for better performance as shown below: 
+  
+   *Non-correlated :* 
     
     ```SELECT e.id, e.name FROM Employee INNER JOIN (SELECT department, AVG(salary) AS department_average FROM Employee GROUP BY department) AS t ON e.department = t.departmentWHERE e.salary > t.department_average;```
