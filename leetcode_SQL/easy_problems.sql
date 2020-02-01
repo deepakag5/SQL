@@ -282,3 +282,42 @@ SELECT ad_id, IFNULL(ROUND(AVG(CASE WHEN action='Clicked' THEN 1
 FROM Ads
 GROUP BY ad_id
 ORDER BY 2 DESC, 1;
+
+-- alternate solution
+
+SELECT ad_id, CASE WHEN num_clicked+num_viewed=0 THEN 0.00 ELSE ROUND(num_clicked/(num_clicked+num_viewed)*100,2) END as ctr
+FROM
+(
+SELECT ad_id, SUM(CASE WHEN action='Clicked' THEN 1 ELSE 0 END) as num_clicked,
+              SUM(CASE WHEN action='Viewed' THEN 1 ELSE 0 END) as num_viewed
+FROM Ads
+GROUP BY ad_id
+) as T
+ORDER BY 2 DESC, 1;
+
+-- alternate solution (brute force)
+
+SELECT A.ad_id, CASE WHEN ctr IS NULL THEN 0.00 ELSE ROUND(ctr*100,2) END as ctr
+FROM
+(SELECT ad_id
+FROM Ads
+GROUP BY ad_id) as A
+LEFT JOIN
+(SELECT T1.ad_id, clicked/clicked_or_viewed as ctr
+FROM
+(SELECT ad_id, COUNT(*) as clicked
+FROM Ads
+WHERE action IN ('Clicked')
+GROUP BY ad_id) as T1
+INNER JOIN
+(SELECT ad_id, COUNT(*) as clicked_or_viewed
+FROM Ads
+WHERE action in ('Clicked', 'Viewed')
+GROUP BY ad_id) as T2
+ON T1.ad_id=T2.ad_id) as T3
+ON A.ad_id=T3.ad_id
+ORDER BY 2 DESC, 1;
+
+
+
+
