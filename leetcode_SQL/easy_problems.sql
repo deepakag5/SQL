@@ -319,5 +319,33 @@ ON A.ad_id=T3.ad_id
 ORDER BY 2 DESC, 1;
 
 
+-- Combine Two Tables
 
+SELECT FirstName, LastName, City, State
+FROM Person as p
+LEFT JOIN Address as a
+ON p.PersonId=a.PersonId;
+
+
+-- Game Play Analysis II
+
+SELECT player_id, device_id
+FROM activity
+WHERE (player_id, event_date)
+IN (
+SELECT player_id, min(event_date)
+FROM activity
+GROUP BY player_id
+)
+
+-- alternate solution
+
+SELECT player_id, device_id
+FROM
+(
+SELECT player_id, device_id, ROW_NUMBER() OVER(PARTITION BY player_id, device_id
+                                                  ORDER BY event_date) as row_device
+FROM activity
+WHERE row_device=1
+) as t
 
