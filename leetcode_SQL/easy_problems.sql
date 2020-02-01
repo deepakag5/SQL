@@ -349,3 +349,22 @@ FROM activity
 WHERE row_device=1
 ) as t
 
+-- Sales Analysis III
+
+SELECT p.product_id, product_name
+FROM
+Product as p
+INNER JOIN
+Sales as s
+ON p.product_id=s.product_id
+GROUP By p.product_id
+HAVING min(sale_date)>='2019-01-01' AND max(sale_date)<='2019-03-31'
+
+-- User Activity for the Past 30 Days I
+
+SELECT activity_date as day, count(distinct user_id) as active_users
+FROM activity
+WHERE activity_date>='2019-06-28' and activity_date<='2019-07-27'
+GROUP BY activity_date
+HAVING count(distinct user_id)>0
+
