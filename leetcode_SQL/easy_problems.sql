@@ -368,3 +368,17 @@ WHERE activity_date>='2019-06-28' and activity_date<='2019-07-27'
 GROUP BY activity_date
 HAVING count(distinct user_id)>0
 
+-- Project Employees II
+
+SELECT p.project_id
+FROM project as p
+GROUP BY project_id
+HAVING COUNT(employee_id)
+=(
+SELECT COUNT(employee_id)
+FROM project as p
+GROUP BY project_id
+ORDER BY COUNT(employee_id) DESC
+LIMIT 1
+)
+
