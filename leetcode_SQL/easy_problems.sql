@@ -265,3 +265,20 @@ AND c.name='RED'
 RIGHT JOIN salesperson as c
 ON a.sales_id=c.sales_id
 WHERE o.sales_id is NULL;
+
+-- Duplicate Emails
+
+SELECT Email
+FROM Person
+GROUP BY Email
+HAVING COUNT(*)>1;
+
+-- Ads Performance
+
+SELECT ad_id, IFNULL(ROUND(AVG(CASE WHEN action='Clicked' THEN 1
+                    WHEN action='Viewed' THEN 0
+                    ELSE NULL
+              END)*100,2),0) as ctr
+FROM Ads
+GROUP BY ad_id
+ORDER BY 2 DESC, 1;
