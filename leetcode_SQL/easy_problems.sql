@@ -382,3 +382,14 @@ ORDER BY COUNT(employee_id) DESC
 LIMIT 1
 )
 
+
+-- List Products Ordered in a Period
+
+# Write your MySQL query statement below
+SELECT p.product_name, SUM(unit) as unit
+FROM products as p
+INNER JOIN orders as o
+ON p.product_id=o.product_id
+WHERE order_date BETWEEN '2020-02-01' AND '2020-02-29'
+GROUP BY 1
+HAVING SUM(unit)>=100
