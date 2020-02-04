@@ -393,3 +393,11 @@ ON p.product_id=o.product_id
 WHERE order_date BETWEEN '2020-02-01' AND '2020-02-29'
 GROUP BY 1
 HAVING SUM(unit)>=100
+
+-- employee salary greater than manager
+
+SELECT e1.name as employee
+FROM employee as e1
+LEFT JOIN employee as e2
+ON e1.managerid=e2.id
+WHERE e1.salary>e2.salary;
