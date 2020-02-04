@@ -400,4 +400,22 @@ SELECT e1.name as employee
 FROM employee as e1
 LEFT JOIN employee as e2
 ON e1.managerid=e2.id
-WHERE e1.salary>e2.salary;
+WHERE e1.salary>e2.salary
+
+-- Sales Analysis II
+
+SELECT buyer_id
+FROM sales as s
+INNER JOIN product as p
+ON s.product_id=p.product_id
+GROUP BY buyer_id
+HAVING SUM(CASE WHEN product_name='S8' THEN 1 ELSE 0 END) > 0
+AND SUM(CASE WHEN product_name='iPhone' THEN 1 ELSE 0 END) = 0
+
+-- Customers who never ordered
+
+SELECT name as customers
+FROM customers as c
+LEFT JOIN orders as o
+ON c.id=o.customerid
+WHERE o.customerid IS NULL
