@@ -438,8 +438,11 @@ SELECT ROUND(IFNULL((SELECT COUNT(*) FROM (SELECT DISTINCT requester_id, accepte
                     (SELECT COUNT(*) FROM (SELECT DISTINCT sender_id, send_to_id FROM
                                           friend_request) as T2),0), 2) as accept_rate
 
+-- Delete duplicate emails
 
-
+DELETE p1 FROM Person as p1,
+    Person as p2
+WHERE p1.email=p2.email AND p1.id>p2.id;
 
 
 
