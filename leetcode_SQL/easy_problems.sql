@@ -419,3 +419,27 @@ FROM customers as c
 LEFT JOIN orders as o
 ON c.id=o.customerid
 WHERE o.customerid IS NULL
+
+-- Biggest Single Number
+
+SELECT MAX(num) as num
+FROM
+(
+SELECT num
+FROM my_numbers
+GROUP BY num
+HAVING COUNT(1)=1
+) as t
+
+-- Friend Requests I: Overall Acceptance Rate
+
+SELECT ROUND(IFNULL((SELECT COUNT(*) FROM (SELECT DISTINCT requester_id, accepter_id FROM
+                                         request_accepted) as T1) /
+                    (SELECT COUNT(*) FROM (SELECT DISTINCT sender_id, send_to_id FROM
+                                          friend_request) as T2),0), 2) as accept_rate
+
+
+
+
+
+
