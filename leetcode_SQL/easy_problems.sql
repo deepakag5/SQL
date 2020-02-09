@@ -442,7 +442,12 @@ SELECT ROUND(IFNULL((SELECT COUNT(*) FROM (SELECT DISTINCT requester_id, accepte
 
 DELETE p1 FROM Person as p1,
     Person as p2
-WHERE p1.email=p2.email AND p1.id>p2.id;
+WHERE p1.email=p2.email AND p1.id>p2.id
 
 
+-- Classes more than 5 students
 
+SELECT class
+FROM courses
+GROUP BY class
+HAVING COUNT(DISTINCT student)>=5
