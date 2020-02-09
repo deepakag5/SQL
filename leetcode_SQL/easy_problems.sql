@@ -451,3 +451,12 @@ SELECT class
 FROM courses
 GROUP BY class
 HAVING COUNT(DISTINCT student)>=5
+
+
+-- Rising Temp
+
+SELECT w2.id
+FROM weather w1
+JOIN weather w2
+ON DATEDIFF(w2.recorddate,w1.recorddate)=1 AND w2.temperature>w1.temperature
+
