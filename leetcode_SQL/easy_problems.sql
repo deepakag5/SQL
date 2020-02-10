@@ -460,3 +460,12 @@ FROM weather w1
 JOIN weather w2
 ON DATEDIFF(w2.recorddate,w1.recorddate)=1 AND w2.temperature>w1.temperature
 
+-- User Activity for the Past 30 Days II
+
+SELECT IFNULL(ROUND(sum(user_sessions)/count(user_id),2),0.0) as average_sessions_per_user
+FROM (
+SELECT user_id, COUNT(DISTINCT session_id) as user_sessions
+FROM activity
+WHERE DATEDIFF('2019-07-27',activity_date) > 30
+GROUP BY user_id
+) AS t
