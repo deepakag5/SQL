@@ -466,6 +466,6 @@ SELECT IFNULL(ROUND(sum(user_sessions)/count(user_id),2),0.0) as average_session
 FROM (
 SELECT user_id, COUNT(DISTINCT session_id) as user_sessions
 FROM activity
-WHERE DATEDIFF('2019-07-27',activity_date) > 30
+WHERE DATEDIFF('2019-07-27',activity_date) < 30
 GROUP BY user_id
 ) AS t
