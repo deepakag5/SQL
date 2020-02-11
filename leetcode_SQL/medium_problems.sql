@@ -18,7 +18,13 @@ UNION
 
 SELECT employee_id
 FROM employees
-WHERE manager_id in (SELECT employee_id FROM employees WHERE employee_id!=manager_id AND manager_id=1)
+WHERE manager_id in
+(
+SELECT employee_id
+FROM employees
+WHERE employee_id!=manager_id
+AND manager_id=1
+)
 
 UNION
 
@@ -35,4 +41,13 @@ FROM employees
 WHERE employee_id!=manager_id
 AND manager_id=1)
 )
+
+--  Running Total for Different Genders
+
+SELECT s1.gender, s1.day, SUM(s2.score_points)
+FROM scores as s1
+JOIN scores as s2
+ON s1.gender=s2.gender
+AND s2.day<=s1.day   -- as after joining we want to get sum for days less than s1
+GROUP BY 1,2
 
