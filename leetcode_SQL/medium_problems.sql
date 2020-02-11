@@ -51,3 +51,20 @@ ON s1.gender=s2.gender
 AND s2.day<=s1.day   -- as after joining we want to get sum for days less than s1
 GROUP BY 1,2
 
+-- Find the Start and End Number of Continuous Ranges
+
+SELECT MIN(log_id) as start_id, MAX(log_id) as end_id
+FROM
+(SELECT log_id, ROW_NUMBER() OVER(ORDER BY log_id) as num
+FROM logs) as T
+GROUP BY log_id-num
+ORDER BY 1
+
+SELECT MIN(log_id) as start_id, MAX(start_id) as end_id
+FROM
+(SELECT log_id, ABS(log_id-ROW_NUMBER() OVER(ORDER BY log_id)) as seq
+FROM logs) as T
+GROUP BY seq
+ORDER BY 1
+
+
