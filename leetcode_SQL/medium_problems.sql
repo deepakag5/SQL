@@ -67,4 +67,27 @@ FROM logs) as T
 GROUP BY seq
 ORDER BY 1
 
+-- Project Employees III
 
+SELECT project_id, employee_id
+FROM
+(SELECT p.project_id, e.employee_id, DENSE_RANK() OVER(PARTITION BY p.project_id ORDER BY e.experience_years DESC) as rnk
+FROM project p
+JOIN employee e
+ON p.employee_id=e.employee_id)
+WHERE rnk = 1;
+
+-- alternate solution
+
+SELECT p.project_id, e.employee_id
+FROM project as p
+INNER JOIN employee as e
+ON p.employee_id=e.employee_id
+WHERE (p.project_id, e.experience_years)  -- important to note
+IN (
+SELECT p.project_id, max(e.experience_years)
+FROM project as p
+INNER JOIN employee as e
+ON p.employee_id=e.employee_id
+GROUP BY p.project_id
+)
