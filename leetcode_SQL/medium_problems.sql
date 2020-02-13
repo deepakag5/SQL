@@ -91,3 +91,27 @@ INNER JOIN employee as e
 ON p.employee_id=e.employee_id
 GROUP BY p.project_id
 )
+
+-- Game Play Analysis III
+
+SELECT a1.player_id, a1.event_date, SUM(a2.games_played) as games_played_so_far
+FROM activity as a1
+JOIN activity as a2
+ON a1.player_id=a2.player_id
+AND a2.event_date<=a1.event_date
+GROUP BY 1,2
+
+-- Active Businesses
+
+SELECT business_id
+FROM events as e
+JOIN
+(
+SELECT event_type, IFNULL(AVG(occurences),0) as avg_event
+FROM events
+GROUP BY 1
+) as T
+ON e.event_type=T.event_type
+WHERE e.occurences>T.avg_event
+GROUP BY business_id
+HAVING COUNT(e.event_type)>1
