@@ -144,3 +144,14 @@ GROUP BY q1.turn
 HAVING SUM(q2.weight) <= 1000
 ORDER BY SUM(q2.weight) DESC
 LIMIT 1
+
+-- customers who bought all products
+
+SELECT customer_id
+FROM customer c
+GROUP BY customer_id
+HAVING COUNT(DISTINCT c.product_key)=
+(
+SELECT COUNT(*)
+FROM product
+)
