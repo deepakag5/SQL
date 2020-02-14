@@ -115,3 +115,21 @@ ON e.event_type=T.event_type
 WHERE e.occurences>T.avg_event
 GROUP BY business_id
 HAVING COUNT(e.event_type)>1
+
+
+-- Last Person to Fit in the Elevator
+
+SELECT person_name
+FROM queue as Q
+LEFT JOIN
+(
+SELECT q1.person_id, q1.turn, SUM(q2.weight) as running_weight
+FROM queue as q1
+JOIN queue as q2
+ON q2.turn<=q1.turn
+GROUP BY 2,1
+) as T
+ON Q.person_id=T.person_id
+WHERE T.running_weight<=1000
+ORDER BY T.running_weight DESC
+LIMIT 1
