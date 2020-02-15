@@ -469,3 +469,10 @@ FROM activity
 WHERE DATEDIFF('2019-07-27',activity_date) < 30
 GROUP BY user_id
 ) AS t
+
+-- Students With Invalid Departments
+
+SELECT id, name
+FROM students
+WHERE department_id NOT IN
+(SELECT id FROM departments)
