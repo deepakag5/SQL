@@ -183,3 +183,21 @@ GROUP BY 1
     )
 GROUP BY 1,3
 ORDER BY 1
+
+-- Page Recommendations
+
+SELECT
+      DISTINCT page_id as recommended_page
+FROM likes
+WHERE user_id
+IN
+(
+SELECT user2_id as user_id
+FROM friendship
+WHERE user1_id=1
+UNION ALL
+SELECT user1_id as user_id
+FROM friendship
+WHERE user2_id=1
+)
+AND page_id NOT IN (SELECT page_id FROM likes WHERE user_id=1)
