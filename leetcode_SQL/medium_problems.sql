@@ -158,12 +158,28 @@ FROM product
 
 -- Monthly Transactions I
 
-select
+SELECT
     left(trans_date,7) as month,
     country,
     count(*) as trans_count,
     sum(case when state='approved' then 1 else 0 end) as approved_count,
     sum(amount) as trans_total_amount,
     sum(case when state='approved' then amount else 0 end) as approved_total_amount
-from transactions
-group by 1,2
+FROM transactions
+GROUP BY 1,2
+
+-- Highest grade for each student
+
+SELECT
+      student_id,
+      min(course_id) as course_id,
+      grade
+FROM enrollments
+WHERE (student_id,grade)
+IN (
+SELECT student_id, max(grade) as grade
+FROM enrollments
+GROUP BY 1
+    )
+GROUP BY 1,3
+ORDER BY 1
