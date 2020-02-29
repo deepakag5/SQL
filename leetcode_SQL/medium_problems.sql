@@ -256,3 +256,12 @@ FROM
                 customers)
     GROUP BY customer_id) AS t1 ON c.customer_id = t1.customer_id
 ORDER BY invoice_id;
+
+-- tree node
+
+SELECT id,
+      CASE WHEN id = (SELECT id FROM tree WHERE p_id is null) THEN "Root"
+           WHEN id in (SELECT p_id FROM tree) THEN "Inner"
+           ELSE "Leaf"
+      END as type
+FROM tree
