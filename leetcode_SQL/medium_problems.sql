@@ -201,3 +201,24 @@ FROM friendship
 WHERE user2_id=1
 )
 AND page_id NOT IN (SELECT page_id FROM likes WHERE user_id=1)
+
+
+-- manager with at least 5 direct report
+
+# Write your MySQL query statement below
+SELECT
+    name
+FROM
+    employee
+WHERE
+    id IN (SELECT
+            managerid
+        FROM
+            employee
+        WHERE
+            managerid IS NOT NULL
+        GROUP BY managerid
+        HAVING COUNT(DISTINCT id) >= 5)
+
+
+
