@@ -221,4 +221,38 @@ WHERE
         HAVING COUNT(DISTINCT id) >= 5)
 
 
+-- number of trusted contacts of a customer
 
+SELECT
+    invoice_id,
+    customer_name,
+    price,
+    COALESCE(t.contacts_count, 0) AS contacts_cnt,
+    COALESCE(t1.trusted_contact_cnt, 0) AS trusted_contacts_cnt
+-- CASE
+--         WHEN t1.trusted_contact_cnt IS NULL THEN 0
+--         ELSE t1.trusted_contact_cnt
+--     END AS trusted_contacts_cnt
+FROM
+    invoices i
+        JOIN
+    customers c ON c.customer_id = i.user_id
+        LEFT JOIN
+    (SELECT
+        user_id, COUNT(*) AS contacts_count
+    FROM
+        contacts
+    GROUP BY user_id) AS t ON c.customer_id = t.user_id
+        LEFT JOIN
+    (SELECT
+        customer_id, COUNT(*) trusted_contact_cnt
+    FROM
+        customers c
+    LEFT JOIN contacts con ON c.customer_id = con.user_id
+    WHERE
+        con.contact_email IN (SELECT DISTINCT
+                email
+            FROM
+                customers)
+    GROUP BY customer_id) AS t1 ON c.customer_id = t1.customer_id
+ORDER BY invoice_id;
