@@ -265,3 +265,114 @@ SELECT id,
            ELSE "Leaf"
       END as type
 FROM tree
+
+
+-- nth highest salary
+
+CREATE FUNCTION getNthHighestSalary (N INT) RETURNS INT
+BEGIN
+  RETURN
+    (
+    SELECT DISTINCT salary
+    FROM
+    (
+      SELECT salary, DENSE_RANK() OVER(PARTITION BY id ORDER BY salary DESC) AS SAL_RANK
+      FROM employee
+  ) AS T
+    WHERE SAL_RANK=N
+);
+END
+
+
+-- rank scores
+
+SELECT score, DENSE_RANK() OVER(ORDER BY score DESC) AS `rank`
+FROM scores
+
+-- consecutive numbers
+
+SELECT DISTINCT l1.num as consecutiveNums
+FROM Logs as l1,
+     Logs as l2,
+     Logs as l3
+WHERE l1.id=l2.id-1
+      AND l2.id=l3.id-1
+      AND l1.num=l2.num
+      AND l2.num=l3.num
+;
+
+
+-- department highest salary
+
+WITH CTE AS
+(
+  SELECT `name`,
+         departmentId,
+         salary,
+         DENSE_RANK() OVER(PARTITION BY departmentId ORDER BY salary DESC) AS dept_sal_rank
+  FROM employee
+)
+SELECT
+      d.name AS departmentName,
+      t.name AS employeeName,
+      t.salary
+FROM CTE as t
+LEFT JOIN department as d
+ON t.departmentId=d.id
+WHERE dept_sal_rank=1
+;
+
+
+--  managers with at least 5 direct reports
+
+SELECT
+      Name
+FROM Employee AS t1
+JOIN
+    (
+      SELECT
+            ManagerId
+      FROM employee
+      GROUP BY ManagerId
+      HAVING COUNT(ManagerId) >= 5
+    ) as t2
+t1.Id=t2.ManagerId
+;
+
+-- alternate solution
+
+WITH CTE AS
+(
+  SELECT e1.ManagerId,
+         e2.Name,
+         COUNT(DISTINCT e1.Id) AS cnt
+  FROM employee as e1
+  JOIN employee as e2
+  ON e2.Id=e1.ManagerId
+  GROUP BY 1,2
+)
+SELECT
+      `Name`
+FROM CTE
+WHERE cnt >= 5
+;
+
+
+-- winning candidate
+
+WITH CTE as
+(
+  SELECT
+        candidateId
+  FROM Vote
+  GROUP BY candidateId
+  ORDER BY COUNT(id) DESC
+  LIMIT 1
+)
+SELECT
+      name as `Name`
+FROM Candidate as c
+JOIN CTE as t
+ON c.id=t.candidateId
+;
+
