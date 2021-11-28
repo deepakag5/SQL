@@ -465,3 +465,221 @@ FROM CTE as t
 WHERE followee IN (SELECT follower FROM follow)
 ORDER BY 1
 ;
+
+
+-- Product Sales Analysis III
+
+WITH CTE AS
+(
+SELECT
+       *,
+       RANK() OVER (PARTITION BY product_id ORDER BY `year`) AS rnk
+FROM sales
+)
+SELECT
+      product_id,`year` AS first_year,quantity,price
+FROM CTE
+WHERE rnk = 1
+;
+
+-- Game Play Analysis IV
+
+WITH CTE AS
+(
+  SELECT
+        player_id,
+        first_value(event_date) OVER(w) AS first_date,
+        Nth_value(event_date) OVER(w) AS second_date
+  FROM activity
+  WINDOW w AS (PARTITION BY player_id ORDER BY event_date ASC)
+)
+SELECT
+      ROUND(COUNT(DISTINCT player_id) / (SELECT COUNT(DISTINCT player_id) FROM activity),2) as fraction
+FROM CTE
+WHERE DATEDIFF(second_date, first_date) = 1
+
+
+-- Unpopular Books
+
+WITH CTE AS
+(
+  SELECT
+        b.book_id,
+        b.name,
+        o.quantity
+  FROM books AS b
+  LEFT JOIN orders as o
+  ON b.book_id=o.book_id
+  AND o.dispatch_date >= ADDDATE('2019-06-23',-365)
+    WHERE b.available_from <= ADDDATE('2019-06-23',-30)
+)
+SELECT
+      book_id,
+      `name`
+FROM CTE
+GROUP BY 1,2
+HAVING COALESCE(SUM(quantity), 0) < 10
+;
+
+
+-- New Users Daily Count
+
+WITH CTE AS
+(
+  SELECT
+        user_id,
+        activity_date,
+        ROW_NUMBER() OVER(PARTITION BY user_id ORDER BY activity_date) as first_login
+  FROM traffic
+  WHERE activity='login'
+)
+SELECT
+      activity_date AS login_date,
+      COUNT(user_id) AS user_count
+FROM CTE
+WHERE first_login = 1 AND activity_date >= ADDDATE('2019-06-30',-90)
+GROUP BY 1
+ORDER BY 1
+;
+
+-- Reported Posts II
+
+WITH CTE AS
+(
+    SELECT action_date, post_id
+    FROM actions
+    WHERE action='report' AND extra='spam'
+    GROUP BY 1,2
+),
+CTE1 AS
+(
+    SELECT action_date as days, COUNT(DISTINCT r.post_id) / COUNT(DISTINCT t.post_id) AS removal_rate
+    FROM CTE AS t
+    LEFT JOIN removals as r
+    ON t.post_id = r.post_id
+    GROUP BY 1
+)
+SELECT
+        ROUND(SUM(removal_rate)/ COUNT(days) *100, 2) AS average_daily_percent
+FROM CTE1
+;
+
+-- Article Views II
+
+WITH CTE as
+(
+  SELECT
+        viewer_id,
+        view_date,
+        COUNT(DISTINCT article_id) AS article_cnt
+  FROM `views`
+  GROUP BY 1,2
+)
+SELECT DISTINCT viewer_id as id
+FROM CTE
+WHERE article_cnt > 1
+;
+
+-- Market Analysis I
+
+WITH CTE AS
+(
+    SELECT
+            buyer_id, COUNT(DISTINCT order_id) AS cnt_orders
+    FROM orders
+    WHERE order_date >= '2019-01-01' AND order_date <= '2019-12-31'
+    GROUP BY 1
+)
+SELECT
+      user_id, join_date, ifnull(cnt_orders, 0) AS orders_in_2019
+FROM users AS u
+LEFT JOIN CTE AS t
+ON u.user_id = t.buyer_id
+;
+
+
+-- Monthly Transactions II
+
+WITH CTE AS
+(
+    SELECT
+          id, country, state, amount, date_format(trans_date, '%Y-%m') AS trans_month
+    FROM transactions
+    WHERE state = 'approved'
+
+    UNION
+
+    SELECT
+          t.id, t.country, 'chargeback' AS state, t.amount, date_format(trans_date, '%Y-%m') AS trans_month
+    FROM chargebacks AS c
+    LEFT JOIN transactions AS t
+    ON c.trans_id = t.id
+)
+SELECT
+      trans_month AS `month`,
+      country,
+      SUM(CASE WHEN state='approved' THEN 1 ELSE 0 END) AS approved_count,
+      SUM(CASE WHEN state='approved' THEN amount ELSE 0 END) AS approved_amount,
+      SUM(CASE WHEN state='chargeback' THEN 1 ELSE 0 END) AS chargeback_count,
+      SUM(CASE WHEN state='chargeback' THEN amount ELSE 0 END) AS chargeback_amount
+FROM CTE
+GROUP BY 1,2
+;
+
+-- Last Person to Fit in the Bus
+
+WITH CTE AS
+(
+SELECT
+      person_name, SUM(weight) OVER(ORDER BY turn ASC) AS cum_weight
+FROM queue
+)
+SELECT
+      person_name
+FROM CTE
+WHERE cum_weight <= 1000
+ORDER BY cum_weight DESC
+LIMIT 1
+;
+
+
+-- Immediate Food Delivery II
+
+WITH CTE AS
+(
+    SELECT
+            order_date,
+            customer_pref_delivery_date,
+            ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY order_date ASC) as ord_rank
+    FROM delivery
+)
+SELECT
+        ROUND(SUM(CASE WHEN order_date=customer_pref_delivery_date THEN 1 ELSE 0 END)/ (SELECT COUNT(*) FROM CTE WHERE ord_rank=1) * 100 , 2) AS immediate_percentage
+FROM CTE
+WHERE ord_rank = 1
+;
+
+
+-- Product Price at a Given Date
+
+WITH CTE AS
+(
+SELECT
+      product_id,
+      new_price,
+      ROW_NUMBER() OVER(PARTITION BY product_id ORDER BY change_date DESC) AS rnk
+FROM products
+WHERE change_date <= '2019-08-16'
+)
+SELECT
+        product_id, new_price AS price
+FROM CTE
+WHERE rnk = 1
+
+UNION
+
+SELECT
+       product_id, COALESCE(null, 10) AS price
+FROM products
+WHERE product_id NOT IN (SELECT product_id FROM products WHERE change_date <= '2019-08-16')
+;
