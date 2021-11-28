@@ -376,3 +376,92 @@ JOIN CTE as t
 ON c.id=t.candidateId
 ;
 
+-- Get Highest Answer Rate Question
+
+WITH CTE AS
+(
+  SELECT
+        question_id,
+        COUNT(answer_id)/ COUNT(*) as answer_rate
+  FROM
+      survey_log
+  GROUP BY 1
+)
+SELECT
+      question_id as survey_log
+FROM CTE
+ORDER BY answer_rate DESC
+LIMIT 1
+;
+
+
+-- Count Student Number in Departments
+
+SELECT
+    dept_name, COUNT(student_id) AS student_number
+FROM
+    department
+        LEFT OUTER JOIN
+    student ON department.dept_id = student.dept_id
+GROUP BY department.dept_name
+ORDER BY student_number DESC , department.dept_name
+;
+
+
+-- Investments in 2016
+
+SELECT
+    SUM(insurance.TIV_2016) AS TIV_2016
+FROM
+    insurance
+WHERE
+    insurance.TIV_2015 IN
+    (
+      SELECT
+        TIV_2015
+      FROM
+        insurance
+      GROUP BY TIV_2015
+      HAVING COUNT(*) > 1
+    )
+    AND CONCAT(LAT, LON) IN
+    (
+      SELECT
+        CONCAT(LAT, LON)
+      FROM
+        insurance
+      GROUP BY LAT , LON
+      HAVING COUNT(*) = 1
+    )
+;
+
+-- Friend Requests II: Who Has the Most Friends
+
+WITH all_user (`user`, friend) AS
+(
+  SELECT requester_id, acceptor_id
+  FROM request_accepted
+  UNION
+  SELECT acceptor_id, requester_id
+  FROM request_accepted
+)
+SELECT user as id, COUNT(DISTINCT friend) as num_friends
+FROM CTE
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 1
+;
+
+-- Second Degree Follower
+
+WITH CTE AS
+(
+  SELECT followee, COUNT(DISTINCT follower) AS num
+  FROM follow
+  GROUP BY 1
+)
+SELECT followee AS follower, num
+FROM CTE as t
+WHERE followee IN (SELECT follower FROM follow)
+ORDER BY 1
+;
